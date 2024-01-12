@@ -1,0 +1,8 @@
+"filename", "language", "Java", "comment", "blank", "total"
+"/var/home/mdd/文档/毕业设计/auto_test_back/src/main/java/com/mdd/auto_test_back/AutoTestApplication.java", "Java", 11, 0, 5, 16
+"/var/home/mdd/文档/毕业设计/auto_test_back/src/main/java/com/mdd/auto_test_back/controller/UserController.java", "Java", 27, 0, 8, 35
+"/var/home/mdd/文档/毕业设计/auto_test_back/src/main/java/com/mdd/auto_test_back/entity/User.java", "Java", 78, 0, 16, 94
+"/var/home/mdd/文档/毕业设计/auto_test_back/src/main/java/com/mdd/auto_test_back/impl/UserServiceImpl.java", "Java", 36, 0, 8, 44
+"/var/home/mdd/文档/毕业设计/auto_test_back/src/main/java/com/mdd/auto_test_back/mapper/UserMapper.java", "Java", 10, 0, 5, 15
+"/var/home/mdd/文档/毕业设计/auto_test_back/src/main/java/com/mdd/auto_test_back/service/UserService.java", "Java", 10, 0, 6, 16
+"Total", "-", 172, 0, 48, 220

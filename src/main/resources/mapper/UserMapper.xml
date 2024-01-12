@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mdd.auto_test_back.mapper.UserMapper">
+    <select id="findAllUser" resultType="User">
+        select * from user;
+    </select>
+    <select id="findAllStu" resultType="User">
+        select * from user where type=0;
+    </select>
+    <select id="findUserByName" resultType="User">
+        select * from user where name=#{name};
+    </select>
+    <update id="modPwd">
+        update user set pwd=#{pwd} where name=#{name};
+    </update>
+    <insert id="addUser">
+        insert into user (name, number, pwd, classroom, type) values (#{name}, #{number}, #{pwd}, #{classroom}, #{type});
+    </insert>
+    <delete id="delAllStu">
+        delete from user where type=0;
+    </delete>
+    <delete id="delUserByName">
+        delete from user where name=#{name};
+    </delete>
+    <update id="modClassroom">
+        update user set classroom=#{classroom} where name=#{name};
+    </update>
+    <update id="modNumber">
+        update user set number=#{number} where name=#{name};
+    </update>
+    <!-- <select id="addUser">
+        insert into user (name, pwd) values (#{name}, #{pwd});
+    </select>
+    <select id="findUser" resultType="User">
+        select * from user where name=#{name};
+    </select>
+    <select id="delUser">
+        delete from user where name=#{name};
+    </select>
+    <select id="modUser">
+        update user set name=#{name}, pwd=#{pwd} where id=#{id};
+    </select>
+    <select id="findUserById" resultType="User">
+        select * from user where id=#{id};
+    </select> -->
+
+</mapper>
