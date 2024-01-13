@@ -2,5 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mdd.auto_test_back.mapper.CompletionMapper">
-
+    <insert id="addCompletion">
+        insert into completion (content, answer, analysis, itemId) values (#{content}, #{answer}, #{analysis}, #{itemId});
+    </insert>
+    <select id="getLastInsertId">
+        select last_insert_id();
+    </select>
+    <select id="getCompletionById">
+        select * from completion where id=#{id};
+    </select>
 </mapper>
