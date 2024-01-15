@@ -21,7 +21,7 @@ public class ItemBankController {
 
     @PostMapping("/addCompletion")
     ItemBank addCompletion(@RequestParam Map<String, String> map) {
-        float score = Float.parseFloat(map.get("socre"));
+        float score = Float.parseFloat(map.get("score"));
         String description = map.get("description");
         String content = map.get("content");
         String answer = map.get("answer");

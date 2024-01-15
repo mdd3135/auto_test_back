@@ -40,7 +40,7 @@ public class ItemBankServiceImpl implements ItemBankService {
 
     @Override
     public Completion getCompletionById(int id) {
-       return completionMapper.getCompletionById(id);
+        return completionMapper.getCompletionById(id);
     }
 
     @Override
@@ -48,5 +48,4 @@ public class ItemBankServiceImpl implements ItemBankService {
         itemBankMapper.deleteItemBankById(id);
     }
 
-    
 }
