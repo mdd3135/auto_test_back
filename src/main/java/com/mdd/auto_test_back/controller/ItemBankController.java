@@ -39,4 +39,10 @@ public class ItemBankController {
         int id = Integer.parseInt(map.get("id"));
         return itemBankService.getCompletionById(id);
     }
+
+    @PostMapping("/deleteItemBank")
+    void deleteItemBank(@RequestParam Map<String, String> map){
+        int id = Integer.parseInt(map.get("id"));
+        itemBankService.deleteItemBank(id);
+    }
 }

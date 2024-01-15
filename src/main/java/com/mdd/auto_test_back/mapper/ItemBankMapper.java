@@ -17,4 +17,6 @@ public interface ItemBankMapper {
     void modItemBankById(ItemBank itemBank);
 
     List<ItemBank> getAllItemBank();
+
+    void deleteItemBankById(int id);
 }

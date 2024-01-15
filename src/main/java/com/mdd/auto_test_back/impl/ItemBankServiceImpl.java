@@ -43,5 +43,10 @@ public class ItemBankServiceImpl implements ItemBankService {
        return completionMapper.getCompletionById(id);
     }
 
+    @Override
+    public void deleteItemBank(int id) {
+        itemBankMapper.deleteItemBankById(id);
+    }
+
     
 }

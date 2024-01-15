@@ -17,8 +17,12 @@
     <update id="modItemBankById">
         update itemBank set questionId=#{questionId}, type=#{type}, score=#{score},description=#{description} where id=#{id};
     </update>
-    
+
     <select id="getAllItemBank">
         select * from itemBank;
     </select>
+
+    <delete id="deleteItemBankById">
+        delete from itemBank where id=#{id};
+    </delete>
 </mapper>

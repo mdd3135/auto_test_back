@@ -14,4 +14,6 @@ public interface ItemBankService {
     List<ItemBank> getAllItemBank();
 
     Completion getCompletionById(int id);
+
+    void deleteItemBank(int id);
 }
