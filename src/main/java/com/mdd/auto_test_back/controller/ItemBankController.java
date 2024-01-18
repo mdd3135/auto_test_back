@@ -20,7 +20,7 @@ public class ItemBankController {
     ItemBankService itemBankService;
 
     @PostMapping("/addCompletion")
-    ItemBank addCompletion(@RequestParam Map<String, String> map) {
+    public ItemBank addCompletion(@RequestParam Map<String, String> map) {
         float score = Float.parseFloat(map.get("score"));
         String description = map.get("description");
         String content = map.get("content");
@@ -30,19 +30,36 @@ public class ItemBankController {
     }
 
     @GetMapping("/getAllItemBank")
-    List<ItemBank> getAllItemBank() {
-        return itemBankService.getAllItemBank();
+    public List<ItemBank> getAllItemBank(@RequestParam Map<String, String> map) {
+        try {
+            int count = Integer.parseInt(map.get("count"));
+            int page = Integer.parseInt(map.get("page"));
+            List<ItemBank> itemList = itemBankService.getAllItemBank();
+            int start = (page - 1) * count;
+            int end = page * count > itemList.size() ? itemList.size() : page * count;
+            return itemList.subList(start, end);
+        } catch (Exception e) {
+            return itemBankService.getAllItemBank();
+        }
+
     }
 
     @GetMapping("/getCompletionById")
-    Completion getCompletionById(@RequestParam Map<String, String> map) {
+    public Completion getCompletionById(@RequestParam Map<String, String> map) {
         int id = Integer.parseInt(map.get("id"));
         return itemBankService.getCompletionById(id);
     }
 
     @PostMapping("/deleteItemBank")
-    void deleteItemBank(@RequestParam Map<String, String> map){
+    public void deleteItemBank(@RequestParam Map<String, String> map) {
         int id = Integer.parseInt(map.get("id"));
         itemBankService.deleteItemBank(id);
     }
+
+    @GetMapping("/getItemBankCount")
+    public int getItemBankCount() {
+        List<ItemBank> itemList = itemBankService.getAllItemBank();
+        return itemList.size();
+    }
+
 }
