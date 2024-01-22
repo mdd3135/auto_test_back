@@ -16,4 +16,7 @@ public interface ItemBankService {
     Completion getCompletionById(int id);
 
     void deleteItemBank(int id);
+
+    ItemBank addChoice(String content, String options, String answer, String analysis, int isMultiple, float score,
+            String description);
 }

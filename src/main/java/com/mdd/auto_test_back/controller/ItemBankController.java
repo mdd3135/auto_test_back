@@ -62,4 +62,16 @@ public class ItemBankController {
         return itemList.size();
     }
 
+    @PostMapping("addChoice")
+    public ItemBank addChoice(@RequestParam Map<String, String> map) {
+        String content = map.get("content");
+        String options = map.get("options");
+        String answer = map.get("answer");
+        String analysis = map.get("analysis");
+        int isMultiple = Integer.parseInt(map.get("isMultiple"));
+        float score = Float.parseFloat(map.get("score"));
+        String description = map.get("description");
+        return itemBankService.addChoice(content, options, answer, analysis, isMultiple, score, description);
+    }
+
 }

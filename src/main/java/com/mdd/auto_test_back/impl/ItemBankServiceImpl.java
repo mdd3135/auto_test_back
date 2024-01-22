@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mdd.auto_test_back.entity.Choice;
 import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
+import com.mdd.auto_test_back.mapper.ChoiceMapper;
 import com.mdd.auto_test_back.mapper.CompletionMapper;
 import com.mdd.auto_test_back.mapper.ItemBankMapper;
 import com.mdd.auto_test_back.service.ItemBankService;
@@ -17,6 +19,8 @@ public class ItemBankServiceImpl implements ItemBankService {
     CompletionMapper completionMapper;
     @Autowired
     ItemBankMapper itemBankMapper;
+    @Autowired
+    ChoiceMapper choiceMapper;
 
     @Override
     public ItemBank addCompletion(float socre, String description, String content, String answer, String analysis) {
@@ -46,6 +50,23 @@ public class ItemBankServiceImpl implements ItemBankService {
     @Override
     public void deleteItemBank(int id) {
         itemBankMapper.deleteItemBankById(id);
+    }
+
+    @Override
+    public ItemBank addChoice(String content, String options, String answer, String analysis, int isMultiple,
+            float score,
+            String description) {
+        String time = String.valueOf(System.currentTimeMillis());
+        ItemBank itemBank = new ItemBank(0, 0, time, 1, score, description);
+        itemBankMapper.addItemBank(itemBank);
+        int itemId = itemBankMapper.getLastInsertId();
+        itemBank.setId(itemId);
+        Choice choice = new Choice(0, content, options, answer, analysis, isMultiple, itemId);
+        choiceMapper.addChoice(choice);
+        int choiceId = choiceMapper.getLastInsertId();
+        itemBank.setQuestionId(choiceId);
+        itemBankMapper.modItemBankById(itemBank);
+        return itemBankMapper.getItemBankById(itemId);
     }
 
 }
