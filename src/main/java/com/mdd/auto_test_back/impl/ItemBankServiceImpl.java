@@ -69,4 +69,8 @@ public class ItemBankServiceImpl implements ItemBankService {
         return itemBankMapper.getItemBankById(itemId);
     }
 
+    @Override
+    public Choice getChoiceById(int id){
+        return choiceMapper.getChoiceById(id);
+    }
 }

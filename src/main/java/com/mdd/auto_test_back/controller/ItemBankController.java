@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mdd.auto_test_back.entity.Choice;
 import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
 import com.mdd.auto_test_back.service.ItemBankService;
@@ -62,7 +63,7 @@ public class ItemBankController {
         return itemList.size();
     }
 
-    @PostMapping("addChoice")
+    @PostMapping("/addChoice")
     public ItemBank addChoice(@RequestParam Map<String, String> map) {
         String content = map.get("content");
         String options = map.get("options");
@@ -72,6 +73,12 @@ public class ItemBankController {
         float score = Float.parseFloat(map.get("score"));
         String description = map.get("description");
         return itemBankService.addChoice(content, options, answer, analysis, isMultiple, score, description);
+    }
+
+    @GetMapping("/getChoiceById")
+    public Choice getChoiceById(@RequestParam Map<String, String> map) {
+        int id = Integer.parseInt(map.get("id"));
+        return itemBankService.getChoiceById(id);
     }
 
 }
