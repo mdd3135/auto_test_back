@@ -27,6 +27,6 @@ public interface ItemBankMapper {
     @Select("select * from itemBank;")
     List<ItemBank> getAllItemBank();
 
-    @Delete("deleteItemBankById")
+    @Delete("delete from itemBank where id=#{id};")
     void deleteItemBankById(int id);
 }
