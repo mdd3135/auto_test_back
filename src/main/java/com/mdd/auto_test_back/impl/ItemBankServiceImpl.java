@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import com.mdd.auto_test_back.entity.Choice;
 import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
+import com.mdd.auto_test_back.entity.Program;
 import com.mdd.auto_test_back.entity.ShortAnswer;
 import com.mdd.auto_test_back.mapper.ChoiceMapper;
 import com.mdd.auto_test_back.mapper.CompletionMapper;
 import com.mdd.auto_test_back.mapper.ItemBankMapper;
+import com.mdd.auto_test_back.mapper.ProgramMapper;
 import com.mdd.auto_test_back.mapper.ShortAnswerMapper;
 import com.mdd.auto_test_back.service.ItemBankService;
 
@@ -25,6 +27,8 @@ public class ItemBankServiceImpl implements ItemBankService {
     ChoiceMapper choiceMapper;
     @Autowired
     ShortAnswerMapper shortAnswerMapper;
+    @Autowired
+    ProgramMapper programMapper;
 
     @Override
     public ItemBank addCompletion(float socre, String description, String content, String answer, String analysis) {
@@ -92,4 +96,31 @@ public class ItemBankServiceImpl implements ItemBankService {
         itemBankMapper.modItemBankById(itemBank);
         return itemBankMapper.getItemBankById(itemId);
     }
+
+    @Override
+    public ShortAnswer getShortAnswerById(int id) {
+        return shortAnswerMapper.getShortAnswerById(id);
+    }
+
+    @Override
+    public ItemBank addProgram(String content, String answer, String analysis, String input, String output,
+            String language, float score, String description) {
+        String time = String.valueOf(System.currentTimeMillis());
+        ItemBank itemBank = new ItemBank(0, 0, time, 4, score, description);
+        itemBankMapper.addItemBank(itemBank);
+        int itemId = itemBankMapper.getLastInsertId();
+        itemBank.setId(itemId);
+        Program program = new Program(0, content, answer, analysis, input, output, language, itemId);
+        programMapper.addProgram(program);
+        int programId = programMapper.getLastInsertId();
+        itemBank.setQuestionId(programId);
+        itemBankMapper.modItemBankById(itemBank);
+        return itemBankMapper.getItemBankById(itemId);
+    }
+
+    @Override
+    public Program getProgramById(int id) {
+        return programMapper.getProgramById(id);
+    }
+
 }

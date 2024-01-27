@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import com.mdd.auto_test_back.entity.Choice;
 import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
+import com.mdd.auto_test_back.entity.Program;
+import com.mdd.auto_test_back.entity.ShortAnswer;
 
 @Repository
 public interface ItemBankService {
@@ -23,5 +25,13 @@ public interface ItemBankService {
 
     Choice getChoiceById(int id);
 
-    ItemBank addShortAnswer(String content, String answer, String analysis, float score, String description );
+    ItemBank addShortAnswer(String content, String answer, String analysis, float score, String description);
+
+    ShortAnswer getShortAnswerById(int id);
+
+    ItemBank addProgram(String content, String answer, String analysis, String input, String output,
+            String language,
+            float score, String description);
+
+    Program getProgramById(int id);
 }
