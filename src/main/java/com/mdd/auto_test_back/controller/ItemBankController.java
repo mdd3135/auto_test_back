@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mdd.auto_test_back.entity.Choice;
 import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
+import com.mdd.auto_test_back.entity.Program;
 import com.mdd.auto_test_back.entity.ShortAnswer;
 import com.mdd.auto_test_back.service.ItemBankService;
 
@@ -92,8 +93,8 @@ public class ItemBankController {
         return itemBankService.addShortAnswer(content, answer, analysis, score, description);
     }
 
-    @GetMapping("/getShortAnswer")
-    public ShortAnswer getShortAnswer(@RequestParam Map<String, String> map) {
+    @GetMapping("/getShortAnswerById")
+    public ShortAnswer getShortAnswerById(@RequestParam Map<String, String> map) {
         int id = Integer.parseInt(map.get("id"));
         return itemBankService.getShortAnswerById(id);
     }
@@ -109,5 +110,11 @@ public class ItemBankController {
         float score = Float.parseFloat(map.get("score"));
         String description = map.get("description");
         return itemBankService.addProgram(content, answer, analysis, input, output, language, score, description);
+    }
+
+    @GetMapping("/getProgramById")
+    public Program getProgramById(@RequestParam Map<String, String> map) {
+        int id = Integer.parseInt(map.get("id"));
+        return itemBankService.getProgramById(id);
     }
 }
