@@ -22,4 +22,6 @@ public interface ItemBankService {
             String description);
 
     Choice getChoiceById(int id);
+
+    ItemBank addShortAnswer(String content, String answer, String analysis, float score, String description );
 }

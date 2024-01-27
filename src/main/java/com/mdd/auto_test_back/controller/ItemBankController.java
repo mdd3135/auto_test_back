@@ -81,4 +81,13 @@ public class ItemBankController {
         return itemBankService.getChoiceById(id);
     }
 
+    @PostMapping("/addShortAnswer")
+    public ItemBank addShortAnswer(@RequestParam Map<String, String> map) {
+        String content = map.get("content");
+        String answer = map.get("answer");
+        String analysis = map.get("analysis");
+        float score = Float.parseFloat(map.get("score"));
+        String description = map.get("description");
+        return itemBankService.addShortAnswer(content, answer, analysis, score, description);
+    }
 }

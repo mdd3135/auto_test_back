@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import com.mdd.auto_test_back.entity.Choice;
 import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
+import com.mdd.auto_test_back.entity.ShortAnswer;
 import com.mdd.auto_test_back.mapper.ChoiceMapper;
 import com.mdd.auto_test_back.mapper.CompletionMapper;
 import com.mdd.auto_test_back.mapper.ItemBankMapper;
+import com.mdd.auto_test_back.mapper.ShortAnswerMapper;
 import com.mdd.auto_test_back.service.ItemBankService;
 
 @Service
@@ -21,6 +23,8 @@ public class ItemBankServiceImpl implements ItemBankService {
     ItemBankMapper itemBankMapper;
     @Autowired
     ChoiceMapper choiceMapper;
+    @Autowired
+    ShortAnswerMapper shortAnswerMapper;
 
     @Override
     public ItemBank addCompletion(float socre, String description, String content, String answer, String analysis) {
@@ -70,7 +74,22 @@ public class ItemBankServiceImpl implements ItemBankService {
     }
 
     @Override
-    public Choice getChoiceById(int id){
+    public Choice getChoiceById(int id) {
         return choiceMapper.getChoiceById(id);
+    }
+
+    @Override
+    public ItemBank addShortAnswer(String content, String answer, String analysis, float score, String description) {
+        String time = String.valueOf(System.currentTimeMillis());
+        ItemBank itemBank = new ItemBank(0, 0, time, 3, score, description);
+        itemBankMapper.addItemBank(itemBank);
+        int itemId = itemBankMapper.getLastInsertId();
+        itemBank.setId(itemId);
+        ShortAnswer shortAnswer = new ShortAnswer(0, content, answer, analysis, itemId);
+        shortAnswerMapper.addShortAnswer(shortAnswer);
+        int shortAnswerId = shortAnswerMapper.getLastInsertId();
+        itemBank.setQuestionId(shortAnswerId);
+        itemBankMapper.modItemBankById(itemBank);
+        return itemBankMapper.getItemBankById(itemId);
     }
 }
