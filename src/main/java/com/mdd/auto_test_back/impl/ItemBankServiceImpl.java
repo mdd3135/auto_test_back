@@ -61,6 +61,15 @@ public class ItemBankServiceImpl implements ItemBankService {
     }
 
     @Override
+    public ItemBank modItemBankById(int id, float score, String description) {
+        ItemBank itemBank = itemBankMapper.getItemBankById(id);
+        itemBank.setScore(score);
+        itemBank.setDescription(description);
+        itemBankMapper.modItemBankById(itemBank);
+        return itemBankMapper.getItemBankById(id);
+    }
+
+    @Override
     public ItemBank addChoice(String content, String options, String answer, String analysis, int isMultiple,
             float score,
             String description) {

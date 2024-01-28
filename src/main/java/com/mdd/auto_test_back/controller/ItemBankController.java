@@ -59,6 +59,14 @@ public class ItemBankController {
         itemBankService.deleteItemBank(id);
     }
 
+    @PostMapping("/modItemBankById")
+    public ItemBank modItemBankById(@RequestParam Map<String, String> map) {
+        int id = Integer.parseInt(map.get("id"));
+        float score = Float.parseFloat(map.get("score"));
+        String description = map.get("description");
+        return itemBankService.modItemBankById(id, score, description);
+    }
+
     @GetMapping("/getItemBankCount")
     public int getItemBankCount() {
         List<ItemBank> itemList = itemBankService.getAllItemBank();

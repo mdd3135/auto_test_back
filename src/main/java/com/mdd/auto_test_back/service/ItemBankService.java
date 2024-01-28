@@ -20,6 +20,8 @@ public interface ItemBankService {
 
     void deleteItemBank(int id);
 
+    ItemBank modItemBankById(int id, float score, String description);
+
     ItemBank addChoice(String content, String options, String answer, String analysis, int isMultiple, float score,
             String description);
 
