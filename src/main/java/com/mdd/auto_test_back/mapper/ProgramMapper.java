@@ -8,7 +8,7 @@ import com.mdd.auto_test_back.entity.Program;
 
 @Mapper
 public interface ProgramMapper {
-    @Insert("insert into program (content, answer, analysis, input, output, language) values (#{content}, #{answer}, #{analysis}, #{input}, #{output}, #{language});")
+    @Insert("insert into program (content, answer, analysis, input, output, language, itemId) values (#{content}, #{answer}, #{analysis}, #{input}, #{output}, #{language}, #{itemId});")
     void addProgram(Program program);
 
     @Select("select last_insert_id();")
