@@ -2,38 +2,122 @@ package com.mdd.auto_test_back.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.mdd.auto_test_back.entity.Choice;
 import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
 import com.mdd.auto_test_back.entity.Program;
 import com.mdd.auto_test_back.entity.ShortAnswer;
+import com.mdd.auto_test_back.mapper.ChoiceMapper;
+import com.mdd.auto_test_back.mapper.CompletionMapper;
+import com.mdd.auto_test_back.mapper.ItemBankMapper;
+import com.mdd.auto_test_back.mapper.ProgramMapper;
+import com.mdd.auto_test_back.mapper.ShortAnswerMapper;
 
-@Repository
-public interface ItemBankService {
-    ItemBank addCompletion(float socre, String description, String content, String answer, String analysis);
+@Service
+public class ItemBankService {
+    @Autowired
+    CompletionMapper completionMapper;
+    @Autowired
+    ItemBankMapper itemBankMapper;
+    @Autowired
+    ChoiceMapper choiceMapper;
+    @Autowired
+    ShortAnswerMapper shortAnswerMapper;
+    @Autowired
+    ProgramMapper programMapper;
 
-    List<ItemBank> getAllItemBank();
+    public ItemBank addCompletion(float socre, String description, String content, String answer, String analysis) {
+        String time = String.valueOf(System.currentTimeMillis());
+        ItemBank itemBank = new ItemBank(0, 0, time, 2, socre, description);
+        itemBankMapper.addItemBank(itemBank);
+        int itemId = itemBankMapper.getLastInsertId();
+        itemBank.setId(itemId);
+        Completion completion = new Completion(0, content, answer, analysis, itemId);
+        completionMapper.addCompletion(completion);
+        int completionId = completionMapper.getLastInsertId();
+        itemBank.setQuestionId(completionId);
+        itemBankMapper.modItemBankById(itemBank);
+        return itemBankMapper.getItemBankById(itemId);
+    }
 
-    Completion getCompletionById(int id);
+    public List<ItemBank> getAllItemBank() {
+        return itemBankMapper.getAllItemBank();
+    }
 
-    void deleteItemBank(int id);
+    public Completion getCompletionById(int id) {
+        return completionMapper.getCompletionById(id);
+    }
 
-    ItemBank modItemBankById(int id, float score, String description);
+    public void deleteItemBank(int id) {
+        itemBankMapper.deleteItemBankById(id);
+    }
 
-    ItemBank addChoice(String content, String options, String answer, String analysis, int isMultiple, float score,
-            String description);
+    public ItemBank modItemBankById(int id, float score, String description) {
+        ItemBank itemBank = itemBankMapper.getItemBankById(id);
+        itemBank.setScore(score);
+        itemBank.setDescription(description);
+        itemBankMapper.modItemBankById(itemBank);
+        return itemBankMapper.getItemBankById(id);
+    }
 
-    Choice getChoiceById(int id);
+    public ItemBank addChoice(String content, String options, String answer, String analysis, int isMultiple,
+            float score,
+            String description) {
+        String time = String.valueOf(System.currentTimeMillis());
+        ItemBank itemBank = new ItemBank(0, 0, time, 1, score, description);
+        itemBankMapper.addItemBank(itemBank);
+        int itemId = itemBankMapper.getLastInsertId();
+        itemBank.setId(itemId);
+        Choice choice = new Choice(0, content, options, answer, analysis, isMultiple, itemId);
+        choiceMapper.addChoice(choice);
+        int choiceId = choiceMapper.getLastInsertId();
+        itemBank.setQuestionId(choiceId);
+        itemBankMapper.modItemBankById(itemBank);
+        return itemBankMapper.getItemBankById(itemId);
+    }
 
-    ItemBank addShortAnswer(String content, String answer, String analysis, float score, String description);
+    public Choice getChoiceById(int id) {
+        return choiceMapper.getChoiceById(id);
+    }
 
-    ShortAnswer getShortAnswerById(int id);
+    public ItemBank addShortAnswer(String content, String answer, String analysis, float score, String description) {
+        String time = String.valueOf(System.currentTimeMillis());
+        ItemBank itemBank = new ItemBank(0, 0, time, 3, score, description);
+        itemBankMapper.addItemBank(itemBank);
+        int itemId = itemBankMapper.getLastInsertId();
+        itemBank.setId(itemId);
+        ShortAnswer shortAnswer = new ShortAnswer(0, content, answer, analysis, itemId);
+        shortAnswerMapper.addShortAnswer(shortAnswer);
+        int shortAnswerId = shortAnswerMapper.getLastInsertId();
+        itemBank.setQuestionId(shortAnswerId);
+        itemBankMapper.modItemBankById(itemBank);
+        return itemBankMapper.getItemBankById(itemId);
+    }
 
-    ItemBank addProgram(String content, String answer, String analysis, String input, String output,
-            String language,
-            float score, String description);
+    public ShortAnswer getShortAnswerById(int id) {
+        return shortAnswerMapper.getShortAnswerById(id);
+    }
 
-    Program getProgramById(int id);
+    public ItemBank addProgram(String content, String answer, String analysis, String input, String output,
+            String language, float score, String description) {
+        String time = String.valueOf(System.currentTimeMillis());
+        ItemBank itemBank = new ItemBank(0, 0, time, 4, score, description);
+        itemBankMapper.addItemBank(itemBank);
+        int itemId = itemBankMapper.getLastInsertId();
+        itemBank.setId(itemId);
+        Program program = new Program(0, content, answer, analysis, input, output, language, itemId);
+        programMapper.addProgram(program);
+        int programId = programMapper.getLastInsertId();
+        itemBank.setQuestionId(programId);
+        itemBankMapper.modItemBankById(itemBank);
+        return itemBankMapper.getItemBankById(itemId);
+    }
+
+    public Program getProgramById(int id) {
+        return programMapper.getProgramById(id);
+    }
+
 }
