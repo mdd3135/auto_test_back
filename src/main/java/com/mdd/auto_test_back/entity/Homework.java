@@ -6,17 +6,15 @@ public class Homework {
     String startTime;
     String deadline;
     String homeworkName;
-    String item;
     int count;
 
-    public Homework(int id, String createTime, String startTime, String deadline, String homeworkName, String item,
+    public Homework(int id, String createTime, String startTime, String deadline, String homeworkName,
             int count) {
         this.id = id;
         this.createTime = createTime;
         this.startTime = startTime;
         this.deadline = deadline;
         this.homeworkName = homeworkName;
-        this.item = item;
         this.count = count;
     }
 
@@ -58,14 +56,6 @@ public class Homework {
 
     public void setHomeworkName(String homeworkName) {
         this.homeworkName = homeworkName;
-    }
-
-    public String getItem() {
-        return item;
-    }
-
-    public void setItem(String item) {
-        this.item = item;
     }
 
     public int getCount() {

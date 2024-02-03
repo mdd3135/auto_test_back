@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping("/findAllUser")
     public List<User> findAllUser(@RequestParam Map<String, String> map) {

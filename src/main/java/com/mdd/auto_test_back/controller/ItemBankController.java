@@ -20,7 +20,7 @@ import com.mdd.auto_test_back.service.ItemBankService;
 public class ItemBankController {
 
     @Autowired
-    ItemBankService itemBankService;
+    private ItemBankService itemBankService;
 
     @PostMapping("/addCompletion")
     public ItemBank addCompletion(@RequestParam Map<String, String> map) {
