@@ -43,4 +43,9 @@ public class HomeworkController {
         int homeworkId = Integer.parseInt(map.get("homeworkId"));
         return homeworkService.getHomeworkItemByHomeworkId(homeworkId);
     }
+
+    @GetMapping("/getHomeworkCount")
+    public int getHomeworkCount() {
+        return homeworkService.getHomeworkCount();
+    }
 }

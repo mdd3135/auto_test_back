@@ -43,4 +43,8 @@ public class HomeworkService {
     public List<HomeworkItem> getHomeworkItemByHomeworkId(int homeworkId) {
         return homeworkItemMapper.getHomeworkItemByHomeworkId(homeworkId);
     }
+
+    public int getHomeworkCount() {
+        return homeworkMapper.getAllHomework().size();
+    }
 }
