@@ -47,4 +47,8 @@ public class HomeworkService {
     public int getHomeworkCount() {
         return homeworkMapper.getAllHomework().size();
     }
+
+    public void removeHomeworkById(int id) {
+        homeworkMapper.deleteHomeworkById(id);
+    }
 }

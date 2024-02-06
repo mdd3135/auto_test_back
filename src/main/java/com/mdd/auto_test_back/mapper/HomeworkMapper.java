@@ -25,7 +25,7 @@ public interface HomeworkMapper {
     Homework getHomeworkById(int id);
 
     @Delete("delete from homework where id=#{id};")
-    void deleteHomeworkById();
+    void deleteHomeworkById(int id);
 
     @Update("update homework set startTime=#{startTime}, deadline=#{deadline}, homeworkName=#{homeworkName}, count=#{count} where id=#{id};")
     Homework updateHomeworkById(Homework homework);

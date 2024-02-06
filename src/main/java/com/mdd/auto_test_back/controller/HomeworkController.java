@@ -48,4 +48,10 @@ public class HomeworkController {
     public int getHomeworkCount() {
         return homeworkService.getHomeworkCount();
     }
+
+    @PostMapping("/removeHomeworkById")
+    public void removeHomeworkById(@RequestParam Map<String, String> map) {
+        int id = Integer.parseInt(map.get("id"));
+        homeworkService.removeHomeworkById(id);
+    }
 }
