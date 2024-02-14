@@ -47,6 +47,10 @@ public class ItemBankService {
         return itemBankMapper.getAllItemBank();
     }
 
+    public ItemBank getItemBankById(int id) {
+        return itemBankMapper.getItemBankById(id);
+    }
+
     public Completion getCompletionById(int id) {
         return completionMapper.getCompletionById(id);
     }

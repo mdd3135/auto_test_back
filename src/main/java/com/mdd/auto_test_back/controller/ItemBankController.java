@@ -47,6 +47,12 @@ public class ItemBankController {
 
     }
 
+    @GetMapping("/getItemBankById")
+    public ItemBank getItemBankById(@RequestParam Map<String, String> map) {
+        int id = Integer.parseInt(map.get("id"));
+        return itemBankService.getItemBankById(id);
+    }
+
     @GetMapping("/getCompletionById")
     public Completion getCompletionById(@RequestParam Map<String, String> map) {
         int id = Integer.parseInt(map.get("id"));
