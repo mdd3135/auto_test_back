@@ -1,5 +1,6 @@
 package com.mdd.auto_test_back.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,22 +11,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mdd.auto_test_back.entity.Collect;
+import com.mdd.auto_test_back.entity.ItemBank;
 import com.mdd.auto_test_back.service.CollectService;
+import com.mdd.auto_test_back.service.ItemBankService;
 
 @RestController
 public class CollectController {
     @Autowired
     private CollectService collectService;
+    @Autowired
+    private ItemBankService itemBankService;
 
-    @GetMapping("/getCollectByUserId")
-    public List<Collect> getCollectByUserId(@RequestParam Map<String, String> map) {
+    @GetMapping("/getCollectItemByUserId")
+    public List<ItemBank> getCollectByUserId(@RequestParam Map<String, String> map) {
         int userId = Integer.parseInt(map.get("userId"));
         int count = Integer.parseInt(map.get("count"));
         int page = Integer.parseInt(map.get("page"));
         List<Collect> collectList = collectService.getCollectByUserId(userId);
         int start = (page - 1) * count;
         int end = page * count > collectList.size() ? collectList.size() : page * count;
-        return collectList.subList(start, end);
+        List<ItemBank> itemBankList = new ArrayList<ItemBank>();
+        for (int i = start; i < end; i++) {
+            itemBankList.add(itemBankService.getItemBankById(collectList.get(i).getItemId()));
+        }
+        return itemBankList;
     }
 
     @PostMapping("/addCollect")
