@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mdd.auto_test_back.entity.Choice;
+import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
 import com.mdd.auto_test_back.entity.Result;
 import com.mdd.auto_test_back.entity.Submit;
@@ -73,6 +74,36 @@ public class SubmitService {
             }
         } else if (item.getType() == 2) {
             // 填空题
+            Completion completion = completionMapper.getCompletionById(item.getQuestionId());
+            List<String> trueAnswerList = JsonConvert.parseStringList(completion.getAnswer());
+            List<String> userAnswerList = JsonConvert.parseStringList(answer);
+            int trueCount = 0;
+            for (int i = 0; i < trueAnswerList.size(); i++) {
+                if (trueAnswerList.get(i).equals(userAnswerList.get(i))) {
+                    trueCount++;
+                }
+            }
+            score = (float) trueCount / (float) trueAnswerList.size() * item.getScore();
+            if (trueCount == trueAnswerList.size()) {
+                feedback = "恭喜你，答案正确！";
+            } else {
+                feedback = "很遗憾，答案错误！正确答案是：";
+                for (int i = 0; i < trueAnswerList.size(); i++) {
+                    if (i != 0) {
+                        feedback += "、";
+                    }
+                    feedback += trueAnswerList.get(i);
+                }
+                feedback += "。您选择的答案是：";
+                for (int i = 0; i < userAnswerList.size(); i++) {
+                    if (i != 0) {
+                        feedback += "、";
+                    }
+                    feedback += userAnswerList.get(i);
+                }
+                feedback += "。\n";
+                feedback += completion.getAnalysis();
+            }
         } else if (item.getType() == 3) {
             // 简答题
         } else if (item.getType() == 4) {
