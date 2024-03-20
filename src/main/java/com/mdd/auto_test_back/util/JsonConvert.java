@@ -18,4 +18,15 @@ public class JsonConvert {
             return new ArrayList<Integer>();
         }
     }
+
+    public static List<String> parseStringList(String jsonString) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(jsonString, new TypeReference<List<String>>() {
+            });
+        } catch (Exception e) {
+            return new ArrayList<String>();
+        }
+
+    }
 }
