@@ -2,12 +2,12 @@ package com.mdd.auto_test_back.entity;
 
 public class Submit {
     int id;
-    int homeworkId;
+    Integer homeworkId;
     int userId;
-    int itemId;
+    Integer itemId;
     int type;
 
-    public Submit(int id, int homeworkId, int userId, int itemId, int type) {
+    public Submit(int id, Integer homeworkId, int userId, Integer itemId, int type) {
         this.id = id;
         this.homeworkId = homeworkId;
         this.userId = userId;
@@ -15,11 +15,11 @@ public class Submit {
         this.type = type;
     }
 
-    public int getItemId() {
+    public Integer getItemId() {
         return itemId;
     }
 
-    public void setItemId(int itemId) {
+    public void setItemId(Integer itemId) {
         this.itemId = itemId;
     }
 
@@ -39,11 +39,11 @@ public class Submit {
         this.id = id;
     }
 
-    public int getHomeworkId() {
+    public Integer getHomeworkId() {
         return homeworkId;
     }
 
-    public void setHomeworkId(int homeworkId) {
+    public void setHomeworkId(Integer homeworkId) {
         this.homeworkId = homeworkId;
     }
 
