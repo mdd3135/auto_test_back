@@ -19,7 +19,7 @@ public interface SubmitMapper {
     @Select("select * from submit where userId=#{userId}")
     public List<Submit> getSubmitByUserId(int userId);
 
-    @Insert("insert into submit (userId, homeworkId, itemId, type) values (#{userId}, #{homeworkId}, #{itemId}, #{type})")
+    @Insert("insert into submit (userId, homeworkId, itemId, type, createTime) values (#{userId}, #{homeworkId}, #{itemId}, #{type}, #{createTime})")
     public void addSubmit(Submit submit);
 
     @Select("select last_insert_id();")

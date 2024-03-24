@@ -11,12 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mdd.auto_test_back.entity.Result;
 import com.mdd.auto_test_back.entity.Submit;
+import com.mdd.auto_test_back.mapper.ResultMapper;
 import com.mdd.auto_test_back.service.SubmitService;
 
 @RestController
 public class SubmitController {
     @Autowired
     private SubmitService submitService;
+
+    @Autowired
+    private ResultMapper resultMapper;
 
     @GetMapping("/getSubmitCountByUserIdAndHomeworkId")
     public int getSubmitCountByUserIdAndHomeworkId(@RequestParam Map<String, String> map) {
@@ -50,4 +54,9 @@ public class SubmitController {
         return submitList.subList(start, end);
     }
 
+    @GetMapping("/getResultBySubmitId")
+    public List<Result> getResultBySubmitId(@RequestParam Map<String, String> map) {
+        int submitId = Integer.parseInt(map.get("submitId"));
+        return resultMapper.getResultBySubmitId(submitId);
+    }
 }

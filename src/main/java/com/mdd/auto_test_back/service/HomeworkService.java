@@ -20,7 +20,14 @@ public class HomeworkService {
     private HomeworkItemMapper homeworkItemMapper;
 
     public List<Homework> getAllHomework() {
-        return homeworkMapper.getAllHomework();
+        List<Homework> homeworkList = homeworkMapper.getAllHomework();
+        for (int i = 0; i < homeworkList.size(); i++) {
+            if (homeworkList.get(i).getId() == 0) {
+                homeworkList.remove(0);
+                break;
+            }
+        }
+        return homeworkList;
     }
 
     public Homework addHomework(String startTime, String deadline, String homeworkName, String item, int count) {
@@ -45,7 +52,14 @@ public class HomeworkService {
     }
 
     public int getHomeworkCount() {
-        return homeworkMapper.getAllHomework().size();
+        List<Homework> homeworkList = homeworkMapper.getAllHomework();
+        for (int i = 0; i < homeworkList.size(); i++) {
+            if (homeworkList.get(i).getId() == 0) {
+                homeworkList.remove(0);
+                break;
+            }
+        }
+        return homeworkList.size();
     }
 
     public void removeHomeworkById(int id) {

@@ -44,7 +44,14 @@ public class ItemBankService {
     }
 
     public List<ItemBank> getAllItemBank() {
-        return itemBankMapper.getAllItemBank();
+        List<ItemBank> itemBankList = itemBankMapper.getAllItemBank();
+        for(int i = 0; i < itemBankList.size(); i++){
+            if(itemBankList.get(i).getId() == 0){
+                itemBankList.remove(i);
+                break;
+            }
+        }
+        return itemBankList;
     }
 
     public ItemBank getItemBankById(int id) {

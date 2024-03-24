@@ -6,13 +6,23 @@ public class Submit {
     int userId;
     Integer itemId;
     int type;
+    String createTime;
 
-    public Submit(int id, Integer homeworkId, int userId, Integer itemId, int type) {
+    public Submit(int id, Integer homeworkId, int userId, Integer itemId, int type, String createTime) {
         this.id = id;
         this.homeworkId = homeworkId;
         this.userId = userId;
         this.itemId = itemId;
         this.type = type;
+        this.createTime = createTime;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
     public Integer getItemId() {

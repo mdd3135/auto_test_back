@@ -156,7 +156,8 @@ public class SubmitService {
         } else if (item.getType() == 4) {
             // 编程题
         }
-        Submit submit = new Submit(0, null, userId, itemId, 1);
+        String time = String.valueOf(System.currentTimeMillis());
+        Submit submit = new Submit(0, 0, userId, itemId, 1, time);
         submitMapper.addSubmit(submit);
         int submitId = submitMapper.getLastInsertId();
         Result result = new Result(0, submitId, itemId, score, feedback);
