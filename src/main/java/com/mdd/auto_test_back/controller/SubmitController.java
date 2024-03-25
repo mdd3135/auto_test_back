@@ -59,4 +59,19 @@ public class SubmitController {
         int submitId = Integer.parseInt(map.get("submitId"));
         return resultMapper.getResultBySubmitId(submitId);
     }
+
+    @PostMapping("/submitHomework")
+    public Submit submitHomework(@RequestParam Map<String, String> map) {
+        int userId = Integer.parseInt(map.get("userId"));
+        int homeworkId = Integer.parseInt(map.get("homeworkId"));
+        return submitService.submitHomework(userId, homeworkId);
+    }
+
+    @PostMapping("/submitHomeworkItem")
+    public Result submitHomeworkItem(@RequestParam Map<String, String> map) throws Exception {
+        String answer = map.get("answer");
+        int submitId = Integer.parseInt(map.get("submitId"));
+        int itemId = Integer.parseInt(map.get("itemId"));
+        return submitService.submitHomeworkItem(answer, submitId, itemId);
+    }
 }

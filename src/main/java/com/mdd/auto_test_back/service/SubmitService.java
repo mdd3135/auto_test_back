@@ -2,12 +2,14 @@ package com.mdd.auto_test_back.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mdd.auto_test_back.entity.Choice;
 import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
@@ -53,109 +55,21 @@ public class SubmitService {
     }
 
     public Result submitItem(int userId, int itemId, String answer) throws Exception {
-        String APIKEY = System.getenv().get("CHAT_API_KEY");
         ItemBank item = itemBankMapper.getItemBankById(itemId);
-        float score = 0;
-        String feedback = "";
+        Map<String, String> map = Map.of("score", "0", "feedback", "");
         if (item.getType() == 1) {
             // 选择题
-            Choice choice = choiceMapper.getChoiceById(item.getQuestionId());
-            List<String> trueAnswerList = JsonConvert.parseStringList(choice.getAnswer());
-            List<String> userAnswerList = JsonConvert.parseStringList(answer);
-            Collections.sort(trueAnswerList);
-            Collections.sort(userAnswerList);
-            if (checkAnswerList(trueAnswerList, userAnswerList)) {
-                score = item.getScore();
-                feedback = "恭喜你，答案正确！";
-            } else {
-                score = 0;
-                feedback = "很遗憾，答案错误！正确答案是：";
-                for (int i = 0; i < trueAnswerList.size(); i++) {
-                    if (i != 0) {
-                        feedback += "、";
-                    }
-                    feedback += trueAnswerList.get(i);
-                }
-                feedback += "。您选择的答案是：";
-                for (int i = 0; i < userAnswerList.size(); i++) {
-                    if (i != 0) {
-                        feedback += "、";
-                    }
-                    feedback += userAnswerList.get(i);
-                }
-                feedback += "。\n";
-                feedback += choice.getAnalysis();
-            }
+            map = gradeChoice(item, answer);
         } else if (item.getType() == 2) {
             // 填空题
-            Completion completion = completionMapper.getCompletionById(item.getQuestionId());
-            List<String> trueAnswerList = JsonConvert.parseStringList(completion.getAnswer());
-            List<String> userAnswerList = JsonConvert.parseStringList(answer);
-            int trueCount = 0;
-            for (int i = 0; i < trueAnswerList.size(); i++) {
-                if (trueAnswerList.get(i).equals(userAnswerList.get(i))) {
-                    trueCount++;
-                }
-            }
-            score = (float) trueCount / (float) trueAnswerList.size() * item.getScore();
-            if (trueCount == trueAnswerList.size()) {
-                feedback = "恭喜你，答案正确！";
-            } else {
-                feedback = "很遗憾，答案错误！正确答案是：";
-                for (int i = 0; i < trueAnswerList.size(); i++) {
-                    if (i != 0) {
-                        feedback += "、";
-                    }
-                    feedback += trueAnswerList.get(i);
-                }
-                feedback += "。您选择的答案是：";
-                for (int i = 0; i < userAnswerList.size(); i++) {
-                    if (i != 0) {
-                        feedback += "、";
-                    }
-                    feedback += userAnswerList.get(i);
-                }
-                feedback += "。\n";
-                feedback += completion.getAnalysis();
-            }
+            map = gradeCompletion(item, answer);
         } else if (item.getType() == 3) {
-            ShortAnswer shortAnswer = shortAnswerMapper.getShortAnswerById(item.getQuestionId());
-            Unirest.setTimeouts(0, 0);
-            String authorization = "Bearer " + APIKEY;
-            String content = "将给你一个标准答案和一个待评分的答案，满分为";
-            content += item.getScore();
-            content += "分，请你给待评分答案评分，只需要说一个分数，不要有其他任何解释。标准答案是“";
-            content += shortAnswer.getAnswer();
-            content += "”，待评分答案是“";
-            content += answer;
-            content += "”";
-            String bodyString = "{\n  \"model\": \"gpt-3.5-turbo\",\n  \"temperature\": 0.2,\n  \"messages\": [{\"role\": \"user\", \"content\": \"";
-            bodyString += content;
-            bodyString += "\"}]\n}";
-            com.mashape.unirest.http.HttpResponse<String> response = Unirest
-                    .post("https://api.chatanywhere.com.cn/v1/chat/completions")
-                    .header("Authorization", authorization)
-                    .header("Content-Type", "application/json")
-                    .body(bodyString)
-                    .asString();
-            ObjectMapper objectMapper = new ObjectMapper();
-            ChatResponse chatResponse = objectMapper.readValue(response.getBody(), ChatResponse.class);
-            String responseMessage = chatResponse.getChoices().get(0).getMessage().getContent();
-            System.out.println(responseMessage);
-            score = (float) LastDoubleInString.convert(responseMessage);
-            if (score == item.getScore()) {
-                feedback = "恭喜你，答案正确！";
-            } else {
-                feedback = "很遗憾，您的答案有误！正确答案是：";
-                feedback += shortAnswer.getAnswer();
-                feedback += "\n您的答案是：";
-                feedback += answer;
-                feedback += "\n";
-                feedback += shortAnswer.getAnalysis();
-            }
+            map = gradeShortAnswer(item, answer);
         } else if (item.getType() == 4) {
             // 编程题
         }
+        String feedback = map.get("feedback");
+        float score = Float.parseFloat(map.get("score"));
         String time = String.valueOf(System.currentTimeMillis());
         Submit submit = new Submit(0, 0, userId, itemId, 1, time);
         submitMapper.addSubmit(submit);
@@ -171,6 +85,146 @@ public class SubmitService {
 
     public List<Result> getResultBySubmitId(int submitId) {
         return resultMapper.getResultBySubmitId(submitId);
+    }
+
+    public Submit submitHomework(int userId, int homeworkId) {
+        String time = String.valueOf(System.currentTimeMillis());
+        Submit submit = new Submit(0, homeworkId, userId, 0, 0, time);
+        submitMapper.addSubmit(submit);
+        int submitId = submitMapper.getLastInsertId();
+        submit.setId(submitId);
+        return submit;
+    }
+
+    public Result submitHomeworkItem(String answer, int submitId, int itemId) throws Exception {
+        ItemBank item = itemBankMapper.getItemBankById(itemId);
+        Map<String, String> map = Map.of("score", "0", "feedback", "");
+        if (item.getType() == 1) {
+            // 选择题
+            map = gradeChoice(item, answer);
+        } else if (item.getType() == 2) {
+            // 填空题
+            map = gradeCompletion(item, answer);
+        } else if (item.getType() == 3) {
+            map = gradeShortAnswer(item, answer);
+        } else if (item.getType() == 4) {
+            // 编程题
+        }
+        String feedback = map.get("feedback");
+        float score = Float.parseFloat(map.get("score"));
+        Result result = new Result(0, submitId, itemId, score, feedback);
+        resultMapper.addResult(result);
+        return result;
+    }
+
+    private Map<String, String> gradeChoice(ItemBank item, String answer) {
+        float score = 0;
+        String feedback = "";
+        Choice choice = choiceMapper.getChoiceById(item.getQuestionId());
+        List<String> trueAnswerList = JsonConvert.parseStringList(choice.getAnswer());
+        List<String> userAnswerList = JsonConvert.parseStringList(answer);
+        Collections.sort(trueAnswerList);
+        Collections.sort(userAnswerList);
+        if (checkAnswerList(trueAnswerList, userAnswerList)) {
+            score = item.getScore();
+            feedback = "恭喜你，答案正确！";
+        } else {
+            score = 0;
+            feedback = "很遗憾，答案错误！正确答案是：";
+            for (int i = 0; i < trueAnswerList.size(); i++) {
+                if (i != 0) {
+                    feedback += "、";
+                }
+                feedback += trueAnswerList.get(i);
+            }
+            feedback += "。您选择的答案是：";
+            for (int i = 0; i < userAnswerList.size(); i++) {
+                if (i != 0) {
+                    feedback += "、";
+                }
+                feedback += userAnswerList.get(i);
+            }
+            feedback += "。\n";
+            feedback += choice.getAnalysis();
+        }
+        return Map.of("score", String.valueOf(score), "feedback", feedback);
+    }
+
+    private Map<String, String> gradeCompletion(ItemBank item, String answer) {
+        Completion completion = completionMapper.getCompletionById(item.getQuestionId());
+        List<String> trueAnswerList = JsonConvert.parseStringList(completion.getAnswer());
+        List<String> userAnswerList = JsonConvert.parseStringList(answer);
+        int trueCount = 0;
+        float score = 0;
+        String feedback = "";
+        for (int i = 0; i < trueAnswerList.size(); i++) {
+            if (trueAnswerList.get(i).equals(userAnswerList.get(i))) {
+                trueCount++;
+            }
+        }
+        score = (float) trueCount / (float) trueAnswerList.size() * item.getScore();
+        if (trueCount == trueAnswerList.size()) {
+            feedback = "恭喜你，答案正确！";
+        } else {
+            feedback = "很遗憾，答案错误！正确答案是：";
+            for (int i = 0; i < trueAnswerList.size(); i++) {
+                if (i != 0) {
+                    feedback += "、";
+                }
+                feedback += trueAnswerList.get(i);
+            }
+            feedback += "。您选择的答案是：";
+            for (int i = 0; i < userAnswerList.size(); i++) {
+                if (i != 0) {
+                    feedback += "、";
+                }
+                feedback += userAnswerList.get(i);
+            }
+            feedback += "。\n";
+            feedback += completion.getAnalysis();
+        }
+        return Map.of("score", String.valueOf(score), "feedback", feedback);
+    }
+
+    private Map<String, String> gradeShortAnswer(ItemBank item, String answer) throws Exception {
+        String APIKEY = System.getenv().get("CHAT_API_KEY");
+        float score = 0;
+        String feedback = "";
+        ShortAnswer shortAnswer = shortAnswerMapper.getShortAnswerById(item.getQuestionId());
+        Unirest.setTimeouts(0, 0);
+        String authorization = "Bearer " + APIKEY;
+        String content = "将给你一个标准答案和一个待评分的答案，满分为";
+        content += item.getScore();
+        content += "分，请你给待评分答案评分，只需要说一个分数，不要有其他任何解释。标准答案是“";
+        content += shortAnswer.getAnswer();
+        content += "”，待评分答案是“";
+        content += answer;
+        content += "”";
+        String bodyString = "{\n  \"model\": \"gpt-3.5-turbo\",\n  \"temperature\": 0.2,\n  \"messages\": [{\"role\": \"user\", \"content\": \"";
+        bodyString += content;
+        bodyString += "\"}]\n}";
+        com.mashape.unirest.http.HttpResponse<String> response = Unirest
+                .post("https://api.chatanywhere.com.cn/v1/chat/completions")
+                .header("Authorization", authorization)
+                .header("Content-Type", "application/json")
+                .body(bodyString)
+                .asString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        ChatResponse chatResponse = objectMapper.readValue(response.getBody(), ChatResponse.class);
+        String responseMessage = chatResponse.getChoices().get(0).getMessage().getContent();
+        System.out.println(responseMessage);
+        score = (float) LastDoubleInString.convert(responseMessage);
+        if (score == item.getScore()) {
+            feedback = "恭喜你，答案正确！";
+        } else {
+            feedback = "很遗憾，您的答案有误！正确答案是：";
+            feedback += shortAnswer.getAnswer();
+            feedback += "\n您的答案是：";
+            feedback += answer;
+            feedback += "\n";
+            feedback += shortAnswer.getAnalysis();
+        }
+        return Map.of("score", String.valueOf(score), "feedback", feedback);
     }
 
     private boolean checkAnswerList(List<String> trueAnswerList, List<String> userAnswerList) {
