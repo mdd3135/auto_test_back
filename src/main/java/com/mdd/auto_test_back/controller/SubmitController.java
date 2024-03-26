@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mdd.auto_test_back.entity.Result;
 import com.mdd.auto_test_back.entity.Submit;
+import com.mdd.auto_test_back.entity.SubmitAndResult;
 import com.mdd.auto_test_back.mapper.ResultMapper;
 import com.mdd.auto_test_back.service.SubmitService;
 
@@ -58,6 +59,12 @@ public class SubmitController {
     public List<Result> getResultBySubmitId(@RequestParam Map<String, String> map) {
         int submitId = Integer.parseInt(map.get("submitId"));
         return resultMapper.getResultBySubmitId(submitId);
+    }
+
+    @GetMapping("/getSubmitAndResultByUserId")
+    public List<SubmitAndResult> getSubmitAndResultByUserId(@RequestParam Map<String, String> map) {
+        int userId = Integer.parseInt(map.get("userId"));
+        return submitService.getSubmitAndResultByUserId(userId);
     }
 
     @PostMapping("/submitHomework")

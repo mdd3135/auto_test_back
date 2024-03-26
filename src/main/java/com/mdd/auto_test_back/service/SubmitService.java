@@ -1,5 +1,6 @@
 package com.mdd.auto_test_back.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import com.mdd.auto_test_back.entity.ItemBank;
 import com.mdd.auto_test_back.entity.Result;
 import com.mdd.auto_test_back.entity.ShortAnswer;
 import com.mdd.auto_test_back.entity.Submit;
+import com.mdd.auto_test_back.entity.SubmitAndResult;
 import com.mdd.auto_test_back.entity.Response.ChatResponse;
 import com.mdd.auto_test_back.mapper.ChoiceMapper;
 import com.mdd.auto_test_back.mapper.CompletionMapper;
@@ -58,15 +60,12 @@ public class SubmitService {
         ItemBank item = itemBankMapper.getItemBankById(itemId);
         Map<String, String> map = Map.of("score", "0", "feedback", "");
         if (item.getType() == 1) {
-            // 选择题
             map = gradeChoice(item, answer);
         } else if (item.getType() == 2) {
-            // 填空题
             map = gradeCompletion(item, answer);
         } else if (item.getType() == 3) {
             map = gradeShortAnswer(item, answer);
         } else if (item.getType() == 4) {
-            // 编程题
         }
         String feedback = map.get("feedback");
         float score = Float.parseFloat(map.get("score"));
@@ -87,6 +86,17 @@ public class SubmitService {
         return resultMapper.getResultBySubmitId(submitId);
     }
 
+    public List<SubmitAndResult> getSubmitAndResultByUserId(int userId) {
+        List<Submit> submitList = submitMapper.getSubmitByUserId(userId);
+        List<SubmitAndResult> submitAndResultList = new ArrayList<SubmitAndResult>();
+        for (Submit submit : submitList) {
+            List<Result> resultList = resultMapper.getResultBySubmitId(submit.getId());
+            SubmitAndResult submitAndResult = new SubmitAndResult(resultList, submit);
+            submitAndResultList.add(submitAndResult);
+        }
+        return submitAndResultList;
+    }
+
     public Submit submitHomework(int userId, int homeworkId) {
         String time = String.valueOf(System.currentTimeMillis());
         Submit submit = new Submit(0, homeworkId, userId, 0, 0, time);
@@ -100,15 +110,12 @@ public class SubmitService {
         ItemBank item = itemBankMapper.getItemBankById(itemId);
         Map<String, String> map = Map.of("score", "0", "feedback", "");
         if (item.getType() == 1) {
-            // 选择题
             map = gradeChoice(item, answer);
         } else if (item.getType() == 2) {
-            // 填空题
             map = gradeCompletion(item, answer);
         } else if (item.getType() == 3) {
             map = gradeShortAnswer(item, answer);
         } else if (item.getType() == 4) {
-            // 编程题
         }
         String feedback = map.get("feedback");
         float score = Float.parseFloat(map.get("score"));
