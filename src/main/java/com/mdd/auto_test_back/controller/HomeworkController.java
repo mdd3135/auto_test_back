@@ -54,4 +54,10 @@ public class HomeworkController {
         int id = Integer.parseInt(map.get("id"));
         homeworkService.removeHomeworkById(id);
     }
+
+    @GetMapping("/getHomeworkByHomeworkId")
+    public Homework getHomeworkById(@RequestParam Map<String, String> map) {
+        int id = Integer.parseInt(map.get("id"));
+        return homeworkService.getHomeworkById(id);
+    }
 }

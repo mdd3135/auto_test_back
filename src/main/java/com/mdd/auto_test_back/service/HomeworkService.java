@@ -65,4 +65,8 @@ public class HomeworkService {
     public void removeHomeworkById(int id) {
         homeworkMapper.deleteHomeworkById(id);
     }
+
+    public Homework getHomeworkById(int id) {
+        return homeworkMapper.getHomeworkById(id);
+    }
 }
