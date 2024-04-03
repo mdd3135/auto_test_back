@@ -21,6 +21,9 @@ public interface DiscussionMapper {
     @Select("select * from discussion where id=#{id}")
     public Discussion findDiscussionById(int id);
 
+    @Select("select last_insert_id();")
+    public int getLastInsertId();
+
     @Select("select * from discussion where userId=#{userId}")
     public List<Discussion> findDiscussionByUserId(int userId);
 
