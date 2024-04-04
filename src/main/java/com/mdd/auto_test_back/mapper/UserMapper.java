@@ -18,6 +18,9 @@ public interface UserMapper {
     @Select("select * from user where name=#{name};")
     User findUserByName(String name);
 
+    @Select("select * from user where id=#{id}")
+    User findUserById(int id);
+
     @Update("update user set pwd=#{pwd} where name=#{name};")
     void modPwd(String name, String pwd);
 

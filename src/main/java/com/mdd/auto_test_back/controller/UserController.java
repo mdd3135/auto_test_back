@@ -24,6 +24,12 @@ public class UserController {
         return userService.findAllUser();
     }
 
+    @GetMapping("/findUserById")
+    public User findUserById(@RequestParam Map<String, String> map) {
+        int id = Integer.parseInt(map.get("id"));
+        return userService.findUserById(id);
+    }
+
     @PostMapping("/login")
     public User login(@RequestParam Map<String, String> map) {
         String name = map.get("name");

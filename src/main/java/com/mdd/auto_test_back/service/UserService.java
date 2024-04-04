@@ -17,6 +17,10 @@ public class UserService {
         return userMapper.findAllUser();
     }
 
+    public User findUserById(int id) {
+        return userMapper.findUserById(id);
+    }
+
     public User login(String name, String pwd) {
         User user = userMapper.findUserByName(name);
         if (user == null) {
