@@ -2,7 +2,7 @@ package com.mdd.auto_test_back.entity.Response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OjResponse {
     String result;
 
