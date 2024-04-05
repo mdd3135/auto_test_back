@@ -5,22 +5,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mdd.auto_test_back.entity.Choice;
 import com.mdd.auto_test_back.entity.Completion;
 import com.mdd.auto_test_back.entity.ItemBank;
+import com.mdd.auto_test_back.entity.Program;
 import com.mdd.auto_test_back.entity.Result;
 import com.mdd.auto_test_back.entity.ShortAnswer;
 import com.mdd.auto_test_back.entity.Submit;
 import com.mdd.auto_test_back.entity.SubmitAndResult;
 import com.mdd.auto_test_back.entity.Response.ChatResponse;
+import com.mdd.auto_test_back.entity.Response.OjResponse;
 import com.mdd.auto_test_back.mapper.ChoiceMapper;
 import com.mdd.auto_test_back.mapper.CompletionMapper;
 import com.mdd.auto_test_back.mapper.ItemBankMapper;
+import com.mdd.auto_test_back.mapper.ProgramMapper;
 import com.mdd.auto_test_back.mapper.ResultMapper;
 import com.mdd.auto_test_back.mapper.ShortAnswerMapper;
 import com.mdd.auto_test_back.mapper.SubmitMapper;
@@ -47,6 +52,9 @@ public class SubmitService {
     @Autowired
     private ShortAnswerMapper shortAnswerMapper;
 
+    @Autowired
+    private ProgramMapper programMapper;
+
     public int getSubmitCountByUserIdAndHomeworkId(int userId, int homeworkId) {
         return submitMapper.getSubmitByUserIdAndHomeworkId(userId, homeworkId).size();
     }
@@ -65,6 +73,7 @@ public class SubmitService {
         } else if (item.getType() == 3) {
             map = gradeShortAnswer(item, answer);
         } else if (item.getType() == 4) {
+            map = gradeProgram(item, answer);
         }
         String feedback = map.get("feedback");
         float score = Float.parseFloat(map.get("score"));
@@ -115,6 +124,7 @@ public class SubmitService {
         } else if (item.getType() == 3) {
             map = gradeShortAnswer(item, answer);
         } else if (item.getType() == 4) {
+            map = gradeProgram(item, answer);
         }
         String feedback = map.get("feedback");
         float score = Float.parseFloat(map.get("score"));
@@ -229,6 +239,38 @@ public class SubmitService {
             feedback += answer;
             feedback += "\n";
             feedback += shortAnswer.getAnalysis();
+        }
+        return Map.of("score", String.valueOf(score), "feedback", feedback);
+    }
+
+    private Map<String, String> gradeProgram(ItemBank item, String answer) throws Exception {
+        float score = 0;
+        String feedback = "";
+        Program program = programMapper.getProgramById(item.getQuestionId());
+        Unirest.setTimeouts(0, 0);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JSONObject jsonBody = new JSONObject();
+        String input = objectMapper.readValue(program.getInput(), new TypeReference<List<String>>() {
+        }).get(0);
+        String output = objectMapper.readValue(program.getOutput(), new TypeReference<List<String>>() {
+        }).get(0);
+        jsonBody.put("language", program.getLanguage());
+        jsonBody.put("code", answer);
+        jsonBody.put("input", input);
+        jsonBody.put("output", output);
+        com.mashape.unirest.http.HttpResponse<String> response = Unirest.post("http://127.0.0.1:5000/judge")
+                .header("Content-Type", "application/json")
+                .body(jsonBody.toString())
+                .asString();
+        OjResponse ojResponse = objectMapper.readValue(response.getBody(), OjResponse.class);
+        String result = ojResponse.getResult();
+        if (result.equals("Accepted")) {
+            score = item.getScore();
+            feedback = "恭喜你，代码正确!";
+        } else {
+            score = 0;
+            feedback = "很遗憾，你的代码有误，请检查你的代码!";
+            System.out.println(result);
         }
         return Map.of("score", String.valueOf(score), "feedback", feedback);
     }
