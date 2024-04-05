@@ -5,16 +5,16 @@ public class ScoreAnalysis {
     String homeworkName;
     String createTime;
     int count;
-    float gainedSocre;
+    float gainedScore;
     float totalScore;
 
-    public ScoreAnalysis(int homeworkId, String homeworkName, String createTime, int count, float gainedSocre,
+    public ScoreAnalysis(int homeworkId, String homeworkName, String createTime, int count, float gainedScore,
             float totalScore) {
         this.homeworkId = homeworkId;
         this.homeworkName = homeworkName;
         this.createTime = createTime;
         this.count = count;
-        this.gainedSocre = gainedSocre;
+        this.gainedScore = gainedScore;
         this.totalScore = totalScore;
     }
 
@@ -50,12 +50,12 @@ public class ScoreAnalysis {
         this.count = count;
     }
 
-    public float getGainedSocre() {
-        return gainedSocre;
+    public float getGainedScore() {
+        return gainedScore;
     }
 
-    public void setGainedSocre(float gainedSocre) {
-        this.gainedSocre = gainedSocre;
+    public void setGainedScore(float gainedScore) {
+        this.gainedScore = gainedScore;
     }
 
     public float getTotalScore() {

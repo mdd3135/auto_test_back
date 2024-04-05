@@ -43,17 +43,17 @@ public class StatisticsService {
             Homework homework = homeworkMapper.getHomeworkById(submit.getHomeworkId());
 
             List<Result> resultList = resultMapper.getResultBySubmitId(submit.getId());
-            float gainedSocre = 0;
+            float gainedScore = 0;
             float totalScore = 0;
             for (int j = 0; j < resultList.size(); j++) {
                 Result result = resultList.get(j);
-                gainedSocre += result.getScore();
+                gainedScore += result.getScore();
                 ItemBank item = itemBankMapper.getItemBankById(result.getItemId());
                 totalScore += item.getScore();
             }
             ScoreAnalysis scoreAnalysis = new ScoreAnalysis(homework.getId(), homework.getHomeworkName(),
                     homework.getCreateTime(),
-                    homework.getCount(), gainedSocre,
+                    homework.getCount(), gainedScore,
                     totalScore);
             scoreAnalysisList.add(scoreAnalysis);
         }
@@ -76,8 +76,8 @@ public class StatisticsService {
         Map<Integer, ScoreAnalysis> idMaxScoreMap = new HashMap<>();
         for (ScoreAnalysis scoreAnalysis : filteredList) {
             int homeworkId = scoreAnalysis.getHomeworkId();
-            float score = scoreAnalysis.getGainedSocre();
-            if (!idMaxScoreMap.containsKey(homeworkId) || score > idMaxScoreMap.get(homeworkId).getGainedSocre()) {
+            float score = scoreAnalysis.getGainedScore();
+            if (!idMaxScoreMap.containsKey(homeworkId) || score > idMaxScoreMap.get(homeworkId).getGainedScore()) {
                 idMaxScoreMap.put(homeworkId, scoreAnalysis);
             }
         }
