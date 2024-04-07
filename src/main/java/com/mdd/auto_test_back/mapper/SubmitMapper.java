@@ -22,6 +22,9 @@ public interface SubmitMapper {
     @Select("select * from submit where userId=#{userId} and type=0")
     public List<Submit> getHomeworkSubmitByUserId(int userId);
 
+    @Select("select * from submit where homeworkId=#{homeworkId}")
+    public List<Submit> getSubmitByHomeworkId(int homeworkId);
+
     @Insert("insert into submit (userId, homeworkId, itemId, type, createTime) values (#{userId}, #{homeworkId}, #{itemId}, #{type}, #{createTime})")
     public void addSubmit(Submit submit);
 

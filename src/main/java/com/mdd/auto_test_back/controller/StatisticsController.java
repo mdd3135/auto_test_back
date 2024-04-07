@@ -21,4 +21,10 @@ public class StatisticsController {
         int userId = Integer.parseInt(map.get("userId"));
         return statisticsService.getScoreAnalysis(userId);
     }
+
+    @GetMapping("/getHomeworkAnalysis")
+    public List<ScoreAnalysis> getHomeworkAnalysis(@RequestParam Map<String, String> map) {
+        int homeworkId = Integer.parseInt(map.get("homeworkId"));
+        return statisticsService.getHomeworkAnalysis(homeworkId);
+    }
 }
