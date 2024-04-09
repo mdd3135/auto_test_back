@@ -21,6 +21,7 @@ import com.mdd.auto_test_back.entity.ShortAnswer;
 import com.mdd.auto_test_back.entity.Submit;
 import com.mdd.auto_test_back.entity.SubmitAndResult;
 import com.mdd.auto_test_back.entity.Response.ChatResponse;
+import com.mdd.auto_test_back.entity.Response.Message;
 import com.mdd.auto_test_back.entity.Response.OjResponse;
 import com.mdd.auto_test_back.mapper.ChoiceMapper;
 import com.mdd.auto_test_back.mapper.CompletionMapper;
@@ -244,7 +245,9 @@ public class SubmitService {
     }
 
     private Map<String, String> gradeProgram(ItemBank item, String answer) throws Exception {
-        float score = 0;
+        float score1 = 0; // 正确性得分
+        float score2 = 0; // 代码规范分
+        float score3 = 0; // 符合要求得分
         String feedback = "";
         Program program = programMapper.getProgramById(item.getQuestionId());
         Unirest.setTimeouts(0, 0);
@@ -265,14 +268,39 @@ public class SubmitService {
         OjResponse ojResponse = objectMapper.readValue(response.getBody(), OjResponse.class);
         String result = ojResponse.getResult();
         if (result.equals("Accepted")) {
-            score = item.getScore();
-            feedback = "恭喜你，代码正确!";
+            score1 = item.getScore();
+            feedback = "恭喜你，代码正确!\n代码正确性得分为：" + score1 + "/" + item.getScore();
         } else {
-            score = 0;
-            feedback = "很遗憾，你的代码有误，请检查你的代码!";
-            System.out.println(result);
+            score1 = 0;
+            feedback = "很遗憾，您的代码有误，请检查你的代码!";
         }
-        return Map.of("score", String.valueOf(score), "feedback", feedback);
+        feedback += "\n您提交的代码是：\n" + answer + "\n";
+        if (score1 > 0) {
+            String APIKEY = System.getenv().get("CHAT_API_KEY");
+            Unirest.setTimeouts(0, 0);
+            String authorization = "Bearer " + APIKEY;
+            String content = "我将给你一份代码，满分" + item.getScore() + "分，请你给这份代码的规范性进行评分，只需要评分，不需要任何解释\n";
+            content += answer + "\n";
+            jsonBody = new JSONObject();
+            jsonBody.put("model", "gpt-3.5-turbo");
+            jsonBody.put("temperature", 0.2);
+            List<Message> messagesList = new ArrayList<>();
+            messagesList.add(new Message("user", content));
+            jsonBody.put("messages", messagesList);
+            com.mashape.unirest.http.HttpResponse<String> response2 = Unirest
+                    .post("https://api.chatanywhere.com.cn/v1/chat/completions")
+                    .header("Authorization", authorization)
+                    .header("Content-Type", "application/json")
+                    .body(jsonBody.toString())
+                    .asString();
+            ChatResponse chatResponse = objectMapper.readValue(response2.getBody(), ChatResponse.class);
+            String responseMessage = chatResponse.getChoices().get(0).getMessage().getContent();
+            System.out.println(responseMessage);
+            score2 = (float) LastDoubleInString.convert(responseMessage);
+            feedback += "代码规范性得分为：" + score2 + "/" + item.getScore() + "\n";
+        }
+        feedback += program.getAnalysis();
+        return Map.of("score", String.valueOf(score1 * 0.5 + score2 * 0.25 + score3 * 0.25), "feedback", feedback);
     }
 
     private boolean checkAnswerList(List<String> trueAnswerList, List<String> userAnswerList) {
