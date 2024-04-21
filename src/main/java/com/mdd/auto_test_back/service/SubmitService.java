@@ -154,16 +154,17 @@ public class SubmitService {
                 }
                 feedback += trueAnswerList.get(i);
             }
-            feedback += "。您选择的答案是：";
-            for (int i = 0; i < userAnswerList.size(); i++) {
-                if (i != 0) {
-                    feedback += "、";
-                }
-                feedback += userAnswerList.get(i);
-            }
-            feedback += "。\n";
-            feedback += choice.getAnalysis();
+            feedback += "。";
         }
+        feedback += "您选择的答案是：";
+        for (int i = 0; i < userAnswerList.size(); i++) {
+            if (i != 0) {
+                feedback += "、";
+            }
+            feedback += userAnswerList.get(i);
+        }
+        feedback += "。\n";
+        feedback += choice.getAnalysis();
         return Map.of("score", String.valueOf(score), "feedback", feedback);
     }
 
@@ -190,16 +191,17 @@ public class SubmitService {
                 }
                 feedback += trueAnswerList.get(i);
             }
-            feedback += "。您选择的答案是：";
-            for (int i = 0; i < userAnswerList.size(); i++) {
-                if (i != 0) {
-                    feedback += "、";
-                }
-                feedback += userAnswerList.get(i);
-            }
-            feedback += "。\n";
-            feedback += completion.getAnalysis();
+            feedback += "。";
         }
+        feedback += "您选择的答案是：";
+        for (int i = 0; i < userAnswerList.size(); i++) {
+            if (i != 0) {
+                feedback += "、";
+            }
+            feedback += userAnswerList.get(i);
+        }
+        feedback += "。\n";
+        feedback += completion.getAnalysis();
         return Map.of("score", String.valueOf(score), "feedback", feedback);
     }
 
@@ -236,11 +238,11 @@ public class SubmitService {
         } else {
             feedback = "很遗憾，您的答案有误！正确答案是：";
             feedback += shortAnswer.getAnswer();
-            feedback += "\n您的答案是：";
-            feedback += answer;
-            feedback += "\n";
-            feedback += shortAnswer.getAnalysis();
         }
+        feedback += "\n您的答案是：";
+        feedback += answer;
+        feedback += "\n";
+        feedback += shortAnswer.getAnalysis();
         return Map.of("score", String.valueOf(score), "feedback", feedback);
     }
 
@@ -271,11 +273,12 @@ public class SubmitService {
         String result = ojResponse.getResult();
         if (result.equals("Accepted")) {
             score1 = item.getScore();
-            feedback = "恭喜你，代码正确!\n代码正确性得分为：" + score1 + "/" + item.getScore();
+            feedback = "恭喜你，代码正确!";
         } else {
             score1 = 0;
             feedback = "很遗憾，您的代码有误，请检查你的代码!";
         }
+        feedback += "\n代码正确性得分为：" + score1 + "/" + item.getScore();
         if (score1 > 0) {
             Unirest.setTimeouts(0, 0);
             String content = "我将给你一份代码，满分" + item.getScore() + "分，请你给这份代码的规范性进行评分，只需要评分，不需要任何解释\n";
